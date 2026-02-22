@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Blogger Pulse AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #ff5722; --dark: #0a0a0a; }
+        body, html { margin: 0; padding: 0; background: var(--dark); color: white; font-family: 'Poppins', sans-serif; height: 100%; overflow: hidden; }
+        .app-container { height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+        .post-card { height: 100vh; width: 100%; scroll-snap-align: start; position: relative; display: flex; flex-direction: column; justify-content: flex-end; }
+        .top-nav { position: fixed; top: 0; width: 100%; padding: 15px; z-index: 100; display: flex; align-items: center; background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent); }
+        .app-logo { width: 35px; height: 35px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; box-shadow: 0 0 10px var(--primary); margin-right: 10px; }
+        .bg-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; opacity: 0.6; }
+        .content-overlay { padding: 30px; background: linear-gradient(transparent, rgba(0,0,0,1)); }
+        .post-title { font-size: 1.6rem; margin-bottom: 15px; }
+        .btn-ai { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; width: 100%; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <nav class="top-nav"><div class="app-logo">B</div><div style="font-weight:600;">PULSE AI</div></nav>
+    <div id="feed" class="app-container"><div style="display:flex; height:100vh; align-items:center; justify-content:center;">Content Loading...</div></div>
+    <script>
+        const API_KEY = 'AIzaSyAY_aUTcloH3Gy7_k6UXPyzJAsz94GWc4k';
+        const BLOG_ID = '4579689781890950064';
+        async function init() {
+            try {
+                const res = await fetch(`https://www.googleapis.com/blogger/v3/blogs/${BLOG_ID}/posts?key=${API_KEY}`);
+                const data = await res.json();
+                const feed = document.getElementById('feed');
+                feed.innerHTML = '';
+                data.items.forEach(post => {
+                    let img = post.content.match(/<img[^>]+src="([^">]+)"/)?.[1] || 'https://via.placeholder.com/800';
+                    feed.innerHTML += `
+                        <div class="post-card">
+                            <img src="${img}" class="bg-img">
+                            <div class="content-overlay">
+                                <h2 class="post-title">${post.title}</h2>
+                                <button class="btn-ai" onclick="alert('AI Assistant Coming Soon!')">Ask AI 🤖</button>
+                            </div>
+                        </div>`;
+                });
+            } catch (e) { document.getElementById('feed').innerHTML = "Error loading data."; }
+        }
+        init();
+    </script>
+</body>
+</html>
